@@ -6,6 +6,7 @@ Filtering
 This section contains functions to filter values during iteration.
 
 .. function:: filter(predicate, gen, param, state)
+              iterator:filter(predicate)
 
    :param param: an predicate to filter the iterator
    :type  param: (function(...) -> bool)
@@ -17,18 +18,17 @@ This section contains functions to filter values during iteration.
    .. code-block:: lua
 
     > each(print, filter(function(x) return x % 3 == 0 end, range(10)))
-    0
     3
     6
     9
 
     > each(print, take(5, filter(function(i, x) return i % 3 == 0 end,
         enumerate(duplicate('x')))))
-    0 x
-    3 x
-    6 x
-    9 x
-    12 x
+    3       x
+    6       x
+    9       x
+    12      x
+    15      x
 
    .. note:: Multireturn iterators are supported but can cause performance 
              regressions.
@@ -36,10 +36,12 @@ This section contains functions to filter values during iteration.
    .. seealso:: :func:`take_while` and :func:`drop_while`.
 
 .. function:: remove_if(predicate, gen, param, state)
+              iterator:remove_if(predicate)
 
    An alias for :func:`filter`.
 
 .. function:: grep(regexp_or_predicate, gen, param, state)
+              iterator:grep(regexp_or_predicate)
 
    If **regexp_or_predicate** is string then the parameter is used as a regular
    expression to build filtering predicate. Otherwise the function is just an
@@ -83,12 +85,12 @@ This section contains functions to filter values during iteration.
     --test]]
 
     > each(print, grep(function(x) return x % 3 == 0 end, range(10)))
-    0
     3
     6
     9
 
 .. function:: partition(predicate, gen, param, state)
+              iterator:partition(predicate)
 
    :param x: a value to find
    :returns: {gen1, param1, state1}, {gen2, param2, state2}
@@ -98,8 +100,8 @@ This section contains functions to filter values during iteration.
 
    .. code-block:: lua
 
-       return {filter(predicate, gen', param', state')},
-       {filter(function(...) return not predicate(...) end, gen, param, state)};
+       return filter(predicate, gen', param', state'),
+       filter(function(...) return not predicate(...) end, gen, param, state);
 
    The function make a clone of the source iterator. Iterators especially
    returned in tables to work with :func:`zip` and other functions.
@@ -108,13 +110,10 @@ This section contains functions to filter values during iteration.
 
    .. code-block:: lua
 
-    each(print, zip(partition(function(i, x) return i % 3 == 0 end, range(10))))
-    --[[test
-    0 1
-    3 2
-    6 4
-    9 5
-    --test]]
+    > each(print, zip(partition(function(i, x) return i % 3 == 0 end, range(10))))
+    3       1
+    6       2
+    9       4
 
    .. note:: ``gen, param, state`` must be pure functional to work properly
              with the function.

@@ -9,6 +9,7 @@ Basic
 -----
 
 .. function:: nth(n, gen, param, state)
+              iterator:nth(n)
 
    :param uint n: a sequential number (indexed starting from ``1``,
                   like Lua tables)
@@ -22,7 +23,7 @@ Basic
    .. code-block:: lua
 
     > print(nth(2, range(5)))
-    1
+    2
 
     > print(nth(10, range(5)))
     nil
@@ -31,12 +32,13 @@ Basic
     b
 
     > print(nth(2, enumerate({"a", "b", "c", "d", "e"})))
-    1 b
+    2 b
 
    This function is optimized for basic array and string iterators and has
    ``O(1)`` complexity for these cases.
 
 .. function:: head(gen, param, state)
+              iterator:head()
 
    :returns: a first element of ``gen, param, state`` iterator
 
@@ -54,13 +56,14 @@ Basic
     > print(head(range(0)))
     error: head: iterator is empty
     > print(head(enumerate({"a", "b"})))
-    0 a
+    1 a
 
 .. function:: car(gen, param, state)
 
    An alias for :func:`head`.
 
 .. function:: tail(gen, param, state)
+              iterator:tail()
 
    :returns: ``gen, param, state`` iterator without a first element
 
@@ -79,17 +82,18 @@ Basic
     > each(print, tail({}))
     > each(print, tail(range(0)))
     > each(print, tail(enumerate({"a", "b", "c"})))
-    1 b
-    2 c
+    2 b
+    3 c
 
 .. function:: cdr(gen, param, state)
 
-   An alias for :func:`head`.
+   An alias for :func:`tail`.
 
 Subsequences
 ------------
 
 .. function:: take_n(n, gen, param, state)
+              iterator:take_n(n)
 
    :param n: a number of elements to take
    :type  n: uint
@@ -100,20 +104,21 @@ Subsequences
    .. code-block:: lua
 
     > each(print, take_n(5, range(10)))
-    0
     1
     2
     3
     4
+    5
 
     > each(print, take_n(5, enumerate(duplicate('x'))))
-    0 x
     1 x
     2 x
     3 x
     4 x
+    5 x
 
 .. function:: take_while(predicate, gen, param, state)
+              iterator:take_while(predicate)
 
    :type predicate: function(...) -> bool
    :returns: an iterator on the longest prefix of ``gen, param, state``
@@ -124,26 +129,27 @@ Subsequences
    .. code-block:: lua
 
     > each(print, take_while(function(x) return x < 5 end, range(10)))
-    0
     1
     2
     3
     4
 
     > each(print, take_while(function(i, a) return i ~=a end,
-        enumerate({5, 2, 1, 3, 4})))
-    0 5
-    1 2
-    2 1
+        enumerate({5, 3, 4, 4, 2})))
+    1       5
+    2       3
+    3       4
 
    .. seealso:: :func:`filter`
 
 .. function:: take(n_or_predicate, gen, param, state)
+              iterator:take(n_or_predicate)
 
    An alias for :func:`take_n` and :func:`take_while` that autodetects
    required function based on **n_or_predicate** type.
 
 .. function:: drop_n(n, gen, param, state)
+              iterator:drop_n(n)
 
    :param n: the number of elements to drop
    :type  n: uint
@@ -154,19 +160,18 @@ Subsequences
 
    .. code-block:: lua
 
-    > each(print, drop_n(0, range(5)))
-    0
-    1
-    2
+    > each(print, drop_n(2, range(5)))
     3
     4
+    5
 
     > each(print, drop_n(2, enumerate({'a', 'b', 'c', 'd', 'e'})))
-    2 c
-    3 d
-    4 e
+    3       c
+    4       d
+    5       e
 
 .. function:: drop_while(predicate, gen, param, state)
+              iterator:drop_while(predicate)
 
    :type predicate: function(...) -> bool
    :returns: ``gen, param, state`` after skipping the longest prefix
@@ -182,19 +187,22 @@ Subsequences
     7
     8
     9
+    10
 
    .. seealso:: :func:`filter`
 
 .. function:: drop(n_or_predicate, gen, param, state)
+              iterator:drop(n_or_predicate)
 
    An alias for :func:`drop_n` and :func:`drop_while` that autodetects
    required function based on **n_or_predicate** type.
 
 
 .. function:: span(n_or_predicate, gen, param, state)
+              iterator:span(n_or_predicate)
 
    :type n_or_predicate: function(...) -> bool or uint
-   :returns: {gen1, param1, state1}, {gen2, param2, state2}
+   :returns: iterator, iterator
 
    Return an iterator pair where the first operates on the longest prefix
    (possibly empty) of ``gen, param, state`` iterator of elements that
@@ -204,26 +212,25 @@ Subsequences
 
    .. code-block:: lua
 
-       return {take(n_or_predicate, gen, param, state)},
-              {drop(n_or_predicate, gen, param, state)};
+       return take(n_or_predicate, gen, param, state),
+              drop(n_or_predicate, gen, param, state);
 
    Examples:
 
    .. code-block:: lua
 
     > each(print, zip(span(function(x) return x < 5 end, range(10))))
-    0 5
-    1 6
-    2 7
-    3 8
-    4 9
+    1       5
+    2       6
+    3       7
+    4       8
 
     > each(print, zip(span(5, range(10))))
-    0 5
-    1 6
-    2 7
-    3 8
-    4 9
+    1       6
+    2       7
+    3       8
+    4       9
+    5       10
 
    .. note:: ``gen, param, state`` must be pure functional to work properly
              with the function.

@@ -4,7 +4,7 @@
 
 print(index(2, range(5)))
 --[[test
-3
+2
 --test]]
 
 print(index(10, range(5)))
@@ -24,7 +24,7 @@ print(index("b", {"a", "b", "c", "d", "e"}))
 
 print(index(1, enumerate({"a", "b", "c", "d", "e"})))
 --[[test
-2
+1
 --test]]
 
 print(index("b", "abcdef"))
@@ -64,7 +64,7 @@ dump(indexes("f", {}))
 
 dump(indexes(1, enumerate({"a", "b", "c", "d", "e"})))
 --[[test
-2
+1
 --test]]
 
 print(indices == indexes) -- an alias
@@ -80,24 +80,4 @@ true
 print(elem_indices == indexes) -- an alias
 --[[test
 true
---test]]
-
---------------------------------------------------------------------------------
--- find
---------------------------------------------------------------------------------
-
-print(find(function(x) return x > 4 and x % 3 == 0 end, range(10)))
---[[test
-6
---test]]
-
-print(find(function(x) return x % 2 == 0 end, range(0)))
---[[test
-nil
---test]]
-
-print(find(function(i, x) return i > 4 and i % 3 == 0 end,
-    enumerate(duplicate('x'))))
---[[test
-6 x
 --test]]

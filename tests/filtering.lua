@@ -4,7 +4,6 @@
 
 dump(filter(function(x) return x % 3 == 0 end, range(10)))
 --[[test
-0
 3
 6
 9
@@ -18,11 +17,11 @@ dump(filter(function(x) return x % 3 == 0 end, range(0)))
 dump(take(5, filter(function(i, x) return i % 3 == 0 end,
     enumerate(duplicate('x')))))
 --[[test
-0 x
 3 x
 6 x
 9 x
 12 x
+15 x
 --test]]
 
 function filter_fun(a, b, c)
@@ -38,8 +37,8 @@ function test3(a, b, c)
 end
 
 n = 50
-dump(filter(filter_fun, map(test3, zip({range(0, n, 1)},
-    {range(0, n, 2)}, {range(0, n, 3)}))))
+dump(filter(filter_fun, map(test3, zip(range(0, n, 1),
+     range(0, n, 2), range(0, n, 3)))))
 --[[test
 0 0 0
 16 48 32
@@ -97,8 +96,7 @@ Emma
 
 dump(zip(partition(function(i, x) return i % 3 == 0 end, range(10))))
 --[[test
-0 1
-3 2
-6 4
-9 5
+3 1
+6 2
+9 4
 --test]]

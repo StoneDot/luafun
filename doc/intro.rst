@@ -16,11 +16,23 @@ functional code**.
 Let's see an example:
 
 .. code-block:: lua
-   :emphasize-lines: 1, 3
+   :emphasize-lines: 2, 4
 
+    -- Functional style
     require "fun" ()
     n = 100
     x = sum(map(function(x) return x^2 end, take(n, tabulate(math.sin))))
+    -- calculate sum(sin(x)^2 for x in 0..n-1)
+    print(x)
+    50.011981355266
+
+.. code-block:: lua
+   :emphasize-lines: 2, 4
+
+    -- Object-oriented style
+    local fun = require "fun"
+    n = 100
+    x = fun.tabulate(math.sin):take(n):map(function(x) return x^2 end):sum()
     -- calculate sum(sin(x)^2 for x in 0..n-1)
     print(x)
     50.011981355266

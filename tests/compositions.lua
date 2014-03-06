@@ -13,15 +13,17 @@ dump(zip())
 --[[test
 --test]]
 
-dump(zip({range(0)}))
+dump(zip(range(0)))
 --[[test
+error: invalid iterator
 --test]]
 
-dump(zip({range(0)}, {range(0)}))
+dump(zip(range(0), range(0)))
 --[[test
+error: invalid iterator
 --test]]
 
-print(nth(10, zip({range(1, 100, 3)}, {range(1, 100, 5)}, {range(1, 100, 7)})))
+print(nth(10, zip(range(1, 100, 3), range(1, 100, 5), range(1, 100, 7))))
 --[[test
 28 46 64
 --test]]
@@ -63,56 +65,56 @@ e
 
 dump(take(15, cycle(range(5))))
 --[[test
-0
 1
 2
 3
 4
-0
+5
 1
 2
 3
 4
-0
+5
 1
 2
 3
 4
+5
 --test]]
 
-dump(take(15, cycle(zip({range(5)}, {"a", "b", "c", "d", "e"}))))
+dump(take(15, cycle(zip(range(5), {"a", "b", "c", "d", "e"}))))
 --[[test
-0 a
-1 b
-2 c
-3 d
-4 e
-0 a
-1 b
-2 c
-3 d
-4 e
-0 a
-1 b
-2 c
-3 d
-4 e
+1 a
+2 b
+3 c
+4 d
+5 e
+1 a
+2 b
+3 c
+4 d
+5 e
+1 a
+2 b
+3 c
+4 d
+5 e
 --test]]
 
 --------------------------------------------------------------------------------
 -- chain
 --------------------------------------------------------------------------------
 
-dump(chain({range(2)}))
+dump(chain(range(2)))
 --[[test
-0
 1
+2
 --test]]
 
-dump(chain({range(2)}, {"a", "b", "c"}, {"one", "two", "three"}))
+dump(chain(range(2), {"a", "b", "c"}, {"one", "two", "three"}))
 --[[test
-0
 1
+2
 a
 b
 c
@@ -121,31 +123,32 @@ two
 three
 --test]]
 
-dump(take(15, cycle(chain({enumerate({"a", "b", "c"})},
+dump(take(15, cycle(chain(enumerate({"a", "b", "c"}),
     {"one", "two", "three"}))))
 --[[test
-0 a
-1 b
-2 c
+1 a
+2 b
+3 c
 one
 two
 three
-0 a
-1 b
-2 c
+1 a
+2 b
+3 c
 one
 two
 three
-0 a
-1 b
-2 c
+1 a
+2 b
+3 c
 --test]]
 
-dump(chain({range(0)}, {range(0)}, {range(0)}))
+dump(chain(range(0), range(0), range(0)))
 --[[test
+error: invalid iterator
 --test]]
 
-dump(chain({range(0)}, {range(1)}, {range(0)}))
+dump(chain(range(0), range(1), range(0)))
 --[[test
-0
+error: invalid iterator
 --test]]

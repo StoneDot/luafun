@@ -13,12 +13,17 @@ will help you to **write simple and efficient functional code**.
 
 Let's see an example:
 
+    > -- Functional style
     > require "fun" ()
-    > n = 100
-    > reduce(operator.add, 0, map(function(x) return x^2 end, range(n)))
-    > -- or if you like method chaining syntax better
-    > range(n).map(function(x) return x^2 end).reduce(operator.add, 0)
     > -- calculate sum(x for x^2 in 1..n)
+    > n = 100
+    > print(reduce(operator.add, 0, map(function(x) return x^2 end, range(n))))
+    328350
+
+    > -- Object-oriented style
+    > local fun = require "fun"
+    > -- calculate sum(x for x^2 in 1..n)
+    > print(fun.range(n):map(function(x) return x^2 end):reduce(operator.add, 0))
     328350
 
 **Lua Fun** takes full advantage of the innovative **tracing JIT compiler**
@@ -58,6 +63,11 @@ LuaJIT 2.1 alpha is recommended. The library designed in mind of fact that
 [LuaJIT traces tail-, up- and down-recursion][LuaJIT-Recursion] and has a lot of
 [byte code optimizations][LuaJIT-Optimizations]. Lua 5.1-5.3 are also
 supported.
+
+This is **master** (development) branch. API may be changed without any special
+notice. Please use **stable** branch for your production deployments.
+If you still want to use **master**, please don't forget to grep `git log`
+for *Incompatible API changes* message. Thanks!
 
 Please check out [documentation][Documentation] for more information.
 

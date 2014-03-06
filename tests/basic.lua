@@ -20,6 +20,20 @@ for _it, a in iter(iter(iter({1, 2, 3}))) do print(a) end
 3
 --test]]
 
+for _it, a in wrap(wrap(iter({1, 2, 3}))) do print(a) end
+--[[test
+1
+2
+3
+--test]]
+
+for _it, a in wrap(wrap(ipairs({1, 2, 3}))) do print(a) end
+--[[test
+1
+2
+3
+--test]]
+
 for _it, a in iter({}) do print(a) end
 --[[test
 --test]]
@@ -28,10 +42,26 @@ for _it, a in iter(iter(iter({}))) do print(a) end
 --[[test
 --test]]
 
+for _it, a in wrap(wrap(iter({}))) do print(a) end
+--[[test
+--test]]
+
+for _it, a in wrap(wrap(ipairs({}))) do print(a) end
+--[[test
+--test]]
+
 -- Check that ``iter`` for arrays is equivalent to ``ipairs``
 local t = {1, 2, 3}
-gen1, param1, state1 = iter(t) 
+gen1, param1, state1 = iter(t):unwrap()
 gen2, param2, state2 = ipairs(t) 
+print(gen1 == gen2, param1 == param2, state1 == state2)
+--[[test
+true true true
+--test]]
+
+-- Test that ``wrap`` do nothing for wrapped iterators
+gen1, param1, state1 = iter({1, 2, 3})
+gen2, param2, state2 = wrap(gen1, param1, state1):unwrap()
 print(gen1 == gen2, param1 == param2, state1 == state2)
 --[[test
 true true true
@@ -209,4 +239,93 @@ true
 print(foreach == each) -- an alias
 --[[test
 true
+--test]]
+
+--------------------------------------------------------------------------------
+-- totable
+--------------------------------------------------------------------------------
+
+local tab = totable(range(5))
+print(type(tab), #tab)
+each(print, tab)
+--[[test
+table 5
+1
+2
+3
+4
+5
+--test]]
+
+local tab = totable(range(0))
+print(type(tab), #tab)
+--[[test
+table 0
+--test]]
+
+local tab = totable("abcdef")
+print(type(tab), #tab)
+each(print, tab)
+--[[test
+table 6
+a
+b
+c
+d
+e
+f
+--test]]
+
+local tab = totable({ 'a', {'b', 'c'}, {'d', 'e', 'f'}})
+print(type(tab), #tab)
+each(print, tab[1])
+each(print, map(unpack, drop(1, tab)))
+--[[test
+table 3
+a
+b c
+d e f
+--test]]
+
+--------------------------------------------------------------------------------
+-- tomap
+--------------------------------------------------------------------------------
+
+local tab = tomap(zip(range(1, 7), 'abcdef'))
+print(type(tab), #tab)
+each(print, iter(tab))
+--[[test
+table 6
+a
+b
+c
+d
+e
+f
+--test]]
+
+local tab = tomap({a = 1, b = 2, c = 3})
+print(type(tab), #tab)
+local t = {}
+for _it, k, v in iter(tab) do t[v] = k end
+table.sort(t)
+for k, v in ipairs(t) do print(k, v) end
+--[[test
+table 0
+1 a
+2 b
+3 c
+--test]]
+
+local tab = tomap(enumerate("abcdef"))
+print(type(tab), #tab)
+each(print, tab)
+--[[test
+table 6
+a
+b
+c
+d
+e
+f
 --test]]

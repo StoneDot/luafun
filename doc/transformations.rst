@@ -4,6 +4,7 @@ Transformations
 .. module:: fun
 
 .. function:: map(fun, gen, param, state)
+              iterator:map(fun)
 
    :param fun: a function to apply
    :type  fun: (function(...) -> ...)
@@ -18,46 +19,48 @@ Transformations
    .. code-block:: lua
 
     > each(print, map(function(x) return 2 * x end, range(4)))
-    0
     2
     4
     6
+    8
 
     fun = function(...) return 'map', ... end
     > each(print, map(fun, range(4)))
-    map 0
     map 1
     map 2
     map 3
+    map 4
 
 .. function:: enumerate(gen, param, state)
+              iterator:enumerate()
 
    :returns: a new iterator
 
    Return a new iterator by enumerating all elements of the
-   ``gen, param, state`` iterator. The mapping is performed on the fly
-   and no values are buffered.
+   ``gen, param, state`` iterator starting from ``1``. The mapping is performed
+   on the fly and no values are buffered.
 
    Examples:
 
    .. code-block:: lua
 
     > each(print, enumerate({"a", "b", "c", "d", "e"}))
-    0 a
-    1 b
-    2 c
-    3 d
-    4 e
+    1 a
+    2 b
+    3 c
+    4 d
+    5 e
 
     > each(print, enumerate(zip({"one", "two", "three", "four", "five"},
         {"a", "b", "c", "d", "e"})))
-    0 one a
-    1 two b
-    2 three c
-    3 four d
-    4 five e
+    1 one a
+    2 two b
+    3 three c
+    4 four d
+    5 five e
 
 .. function:: intersperse(x, gen, param, state)
+              iterator:intersperse(x)
 
    :type x: any
    :returns: a new iterator

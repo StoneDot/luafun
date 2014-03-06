@@ -4,9 +4,10 @@ Compositions
 .. module:: fun
 
 .. function:: zip(...)
+              iterator1:zip(iterator2, iterator3, ...)
 
    :param ...: iterators to "zip"
-   :type  ...: ``{gen, param, state}`` - iterator triplet in table
+   :type  ...: iterator
 
    :returns: an iterator
 
@@ -26,25 +27,22 @@ Compositions
 
     > each(print, zip())
 
-    > each(print, zip({range(5)}, {'a', 'b', 'c'}, {rands()}))
-    0       a       0.57514179487402
-    1       b       0.79693061238668
-    2       c       0.45174307459403
+    > each(print, zip(range(5), {'a', 'b', 'c'}, rands()))
+    1       a       0.57514179487402
+    2       b       0.79693061238668
+    3       c       0.45174307459403
 
     > each(print, zip(partition(function(x) return x > 7 end, range(1, 15, 1))))
-    8 1
-    9 2
-    10 3
-    11 4
-    12 5
-    13 6
-    14 7
-
-   .. note:: An each interator in the parameters list must be surrounded by
-             a curly brackets. This is a limitation of Lua programming language.
-             The plain tables and strings should be passed without braces. 
+    8       1
+    9       2
+    10      3
+    11      4
+    12      5
+    13      6
+    14      7
 
 .. function:: cycle(gen, param, state)
+              iterator:cycle()
 
    :returns: a cycled version of ``{gen, param, state}`` iterator
 
@@ -64,44 +62,44 @@ Compositions
    .. code-block:: lua
 
     > each(print, take(15, cycle(range(5))))
-    0
     1
     2
     3
     4
-    0
+    5
     1
     2
     3
     4
-    0
+    5
     1
     2
     3
     4
+    5
 
-    > each(print, take(15, cycle(zip({range(5)}, {"a", "b", "c", "d", "e"}))))
-    0 a
-    1 b
-    2 c
-    3 d
-    4 e
-    0 a
-    1 b
-    2 c
-    3 d
-    4 e
-    0 a
-    1 b
-    2 c
-    3 d
-    4 e
+    > each(print, take(15, cycle(zip(range(5), {"a", "b", "c", "d", "e"}))))
+    1       a
+    2       b
+    3       c
+    4       d
+    5       e
+    1       a
+    2       b
+    3       c
+    4       d
+    5       e
+    1       a
+    2       b
+    3       c
+    4       d
+    5       e
 
 .. function:: chain(...)
+              iterator1:chain(iterator2, iterator3, ...)
 
    :param ...: iterators to chain
-   :type  ...: ``{gen, param, state}`` - an iterator triplet surrounded by
-               braces
+   :type  ...: iterator
    :returns: a consecutive iterator from sources (left from right)
 
    Make an iterator that returns elements from the first iterator until it is
@@ -113,9 +111,9 @@ Compositions
 
    .. code-block:: lua
 
-    each(print, chain({range(2)}, {"a", "b", "c"}, {"one", "two", "three"}))
-    0
+    > each(print, chain(range(2), {"a", "b", "c"}, {"one", "two", "three"}))
     1
+    2
     a
     b
     c
@@ -123,25 +121,20 @@ Compositions
     two
     three
 
-    each(print, take(15, cycle(chain({enumerate({"a", "b", "c"})},
+    > each(print, take(15, cycle(chain(enumerate({"a", "b", "c"}),
         {"one", "two", "three"}))))
-    0 a
-    1 b
-    2 c
+    1       a
+    2       b
+    3       c
     one
     two
     three
-    0 a
-    1 b
-    2 c
+    1       a
+    2       b
+    3       c
     one
     two
     three
-    0 a
-    1 b
-    2 c
-
-   .. note:: An each interator in the parameters list must be surrounded by
-             a curly brackets. This is a limitation of Lua programming language.
-             The plain tables and strings should be passed without braces. 
-
+    1       a
+    2       b
+    3       c
