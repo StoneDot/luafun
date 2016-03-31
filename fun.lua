@@ -1,13 +1,16 @@
 ---
 --- Lua Fun - a high-performance functional programming library for LuaJIT
 ---
---- Copyright (c) 2013-2014 Roman Tsisyk <roman@tsisyk.com>
+--- Copyright (c) 2013-2016 Roman Tsisyk <roman@tsisyk.com>
 ---
 --- Distributed under the MIT/X11 License. See COPYING.md for more details.
 ---
 
 local exports = {}
 local methods = {}
+
+-- compatibility with Lua 5.1/5.2
+local unpack = rawget(table, "unpack") or unpack
 
 --------------------------------------------------------------------------------
 -- Tools
@@ -1033,8 +1036,20 @@ methods.op = operator
 
 -- a special syntax sugar to export all functions to the global table
 setmetatable(exports, {
-    __call = function(t)
-        for k, v in pairs(t) do _G[k] = v end
+    __call = function(t, override)
+        for k, v in pairs(t) do
+            if _G[k] ~= nil then
+                local msg = 'function ' .. k .. ' already exists in global scope.'
+                if override then
+                    _G[k] = v
+                    print('WARNING: ' .. msg .. ' Overwritten.')
+                else
+                    print('NOTICE: ' .. msg .. ' Skipped.')
+                end
+            else
+                _G[k] = v
+            end
+        end
     end,
 })
 
